@@ -1,0 +1,10 @@
+.jazzignore
+bin
+build
+.settings
+.project
+.classpath
+build
+bin
+gradle
+.gradle

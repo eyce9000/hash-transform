@@ -1,0 +1,75 @@
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'ivy-publish'
+apply plugin: 'maven-publish'
+
+version='1.2.3'
+group='com.github.eyce9000'
+
+publishing {
+	publications {
+		ivy(IvyPublication) {
+			descriptor.status = 'milestone'
+
+			from components.java
+		}
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		ivy{
+			url "${project.projectDir}/../shared-libraries/ivyshared"
+			layout "pattern",{
+				ivy "[organisation]/[module]/[revision]/ivys/ivy.xml"
+				artifact "[organisation]/[module]/[revision]/[type]s/[artifact]-[revision].[ext]"
+			}
+		}
+		maven {
+			// change to point to your repo, e.g. http://my.org/repo
+			url "${project.projectDir}/../shared-libraries/m2"
+		}
+	}
+}
+
+eclipse{
+	classpath {
+		downloadSources=true
+		downloadJavadoc=false
+	}
+}
+
+repositories {
+	mavenCentral()
+	ivy{
+		url "${project.projectDir}/../shared-libraries/ivyshared"
+		layout "pattern",{
+			ivy "[organisation]/[module]/[revision]/ivys/ivy.xml"
+			artifact "[organisation]/[module]/[revision]/[type]s/[artifact]-[revision].[ext]"
+		}
+	}
+}
+
+dependencies {
+
+	compile ('com.google.guava:guava:15.0'
+		,'org.codehaus.groovy:groovy-all:2.4.3')
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+sourceSets{
+	main{
+		java{
+			srcDir 'src/main/java'
+		}
+		resources{
+			srcDir 'src/main/resources'
+		}
+	}
+}
+task sourceJar(type: Jar) {
+	from sourceSets.main.allJava
+}
+
+
